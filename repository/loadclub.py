@@ -1,8 +1,7 @@
-import json
+from models.club import Club_model
 
 
-class Club:
+class Club(Club_model):
     def loadClubs(self):
-        with open('clubs.json') as c:
-             listOfClubs = json.load(c)['clubs']
-             return listOfClubs
+        return self.load_club()
+

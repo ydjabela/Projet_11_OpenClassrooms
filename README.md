@@ -1,51 +1,87 @@
-# gudlift-registration
-
-1. Why
-
-
-    This is a proof of concept (POC) project to show a light-weight version of our competition booking platform. The aim is the keep things as light as possible, and use feedback from the users to iterate.
-
-2. Getting Started
-
-    This project uses the following technologies:
-
-    * Python v3.x+
-
-    * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
-
-        Whereas Django does a lot of things for us out of the box, Flask allows us to add only what we need. 
-     
-
-    * [Virtual environment](https://virtualenv.pypa.io/en/stable/installation.html)
-
-        This ensures you'll be able to install the correct packages without interfering with Python on your machine.
-
-        Before you begin, please ensure you have this installed globally. 
+# Projet_11_OpenClassrooms
+## Améliorez une application Web Python par des tests et du débogage
 
 
-3. Installation
+###Description du projet :
+Güdlft, une société qui a créé une plateforme numérique pour coordonner les compétitions de force 
+(deadlifting, strongman) en Amérique du Nord et en Australie, a pour but:
 
-    - After cloning, change into the directory and type <code>virtualenv .</code>. This will then set up a a virtual python environment within that directory.
+- Analyse de performance d’une application avec Locust.
+- Implémentation d'une suite de tests Python.
+- Géstions des erreurs et les exceptions en Python.
+- Ajout d'un Debug pour  le code de application Python.
 
-    - Next, type <code>source bin/activate</code>. You should see that your command prompt has changed to the name of the folder. This means that you can install packages in here without affecting affecting files outside. To deactivate, type <code>deactivate</code>
 
-    - Rather than hunting around for the packages you need, you can install in one step. Type <code>pip install -r requirements.txt</code>. This will install all the packages listed in the respective file. If you install a package, make sure others know by updating the requirements.txt file. An easy way to do this is <code>pip freeze > requirements.txt</code>
+### Récupérer le projet :
 
-    - Flask requires that you set an environmental variable to the python file. However you do that, you'll want to set the file to be <code>server.py</code>. Check [here](https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) for more details
+```
+git clone https://github.com/ydjabela/Projet_11_Openclassrooms
+```
 
-    - You should now be ready to test the application. In the directory, type either <code>flask run</code> or <code>python -m flask run</code>. The app should respond with an address you should be able to go to using your browser.
+### Création de l'environnement virtuel
 
-4. Current Setup
+Assurez-vous d'avoir installé python et de pouvoir y accéder via votre terminal, en ligne de commande.
 
-    The app is powered by [JSON files](https://www.tutorialspoint.com/json/json_quick_guide.htm). This is to get around having a DB until we actually need one. The main ones are:
-     
-    * competitions.json - list of competitions
-    * clubs.json - list of clubs with relevant information. You can look here to see what email addresses the app will accept for login.
+Si ce n'est pas le cas : https://www.python.org/downloads/
 
-5. Testing
+```
+python -m venv Projet_11
+```
 
-    You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
+### Activation de l'environnement virtuel du projet
 
-    We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
+Windows :
 
+```
+Projet_11\Scripts\activate.bat
+```
+
+MacOS/Linux :
+```
+source Projet_11/bin/activate
+```
+
+### Installation des packages necessaire pour ce projet
+```
+pip install -r requirements.txt
+```
+
+### Fonctionnement:
+Une fois activé, pour démarrer le serveur local, il faudra utiliser la commande :
+
+Windows :
+```
+set FLASK_APP=server.py
+flask run
+```
+
+MacOS/Linux :
+```
+export FLASK_APP=hello.py
+flask run
+```
+### Configuration actuelle
+
+L'application est alimentée par [JSON files](https://www.tutorialspoint.com/json/json_quick_guide.htm). Il s'agit de contourner le fait d'avoir une base de données jusqu'à ce que nous en ayons réellement besoin. Les principaux sont :
+
+* competitions.json - liste des compétitions
+* clubs.json - liste des clubs avec des informations pertinentes. Vous pouvez regarder ici pour voir quelles adresses e-mail l'application acceptera pour la connexion.
+
+### Tests
+
+Vous êtes libre d'utiliser le framework de test que vous aimez, l'essentiel est que vous puissiez montrer les tests que vous utilisez.
+
+Nous aimons aussi montrer à quel point nous testons bien, il y a donc un module appelé
+[coverage](https://coverage.readthedocs.io/en/coverage-5.1/) que vous devez ajouter à votre projet.
+#### Cette commande sera obligatoire à chaque fois que vous voudrez travailler avec le cours. Dans le même terminal, tapez maintenant
+```
+pip install -r requirements.txt
+```
+###Vérifier la qualité du code :
+Pour lancer la vérification de la qualité du code : 
+```
+flake8 --format=html --htmldir=flake-report --exclude=env --max-line-length=119
+```
+### Contributeurs
+- Yacine Djabela
+- Stephane Didier
