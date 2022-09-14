@@ -1,9 +1,7 @@
-import json
+from models.competitions import Competitions_model
 
 
-class Competitions:
+class Competitions(Competitions_model):
 
     def loadCompetitions(self):
-        with open('competitions.json') as comps:
-             listOfCompetitions = json.load(comps)['competitions']
-             return listOfCompetitions
+        return self.load_competitions()
