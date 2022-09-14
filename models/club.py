@@ -11,5 +11,5 @@ class Club_model(Database):
     # -----------------------------------------------------------------------------------------------------------------#
 
     def load_club(self):
-        return self.database_club()
+        return self.database_json(data="clubs")
 

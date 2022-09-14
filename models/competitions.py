@@ -11,5 +11,5 @@ class Competitions_model(Database):
     # -----------------------------------------------------------------------------------------------------------------#
 
     def load_competitions(self):
-        return self.database_competitions()
+        return self.database_json(data="competitions")
 
