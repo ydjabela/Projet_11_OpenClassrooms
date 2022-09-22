@@ -1,7 +1,6 @@
-from models.database import Database
 
 
-class Club_model(Database):
+class Club_model():
 
     def __init__(self, name=None, email=None, points=None):
         self.name = name
@@ -10,6 +9,4 @@ class Club_model(Database):
 
     # -----------------------------------------------------------------------------------------------------------------#
 
-    def load_club(self):
-        return self.database_json(data="clubs")
 
