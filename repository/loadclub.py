@@ -1,11 +1,12 @@
-from models.club import Club_model
+from ..models.club import Club_model
 import json
 
 # ---------------------------------------------------------------------------------------------------------------------#
 
 
 class Club(Club_model):
-    def loadClubs(self):
+
+    def load_clubs(self):
         json_file = "clubs"
         clubs_list = list()
         with open("{}".format(json_file) + ".json") as c:
@@ -20,5 +21,16 @@ class Club(Club_model):
 
     # -----------------------------------------------------------------------------------------------------------------#
 
+    def load_clubs_by_name(self, club_name):
+        clubs = self.load_clubs()
+        foundClub = [c for c in clubs if c['name'] == club_name][0]
+        return foundClub
 
+    # -----------------------------------------------------------------------------------------------------------------#
 
+    def load_clubs_by_email(self, club_email):
+        clubs = self.load_clubs()
+        foundClub = [c for c in clubs if c['email'] == club_email][0]
+        return foundClub
+
+    # -----------------------------------------------------------------------------------------------------------------#

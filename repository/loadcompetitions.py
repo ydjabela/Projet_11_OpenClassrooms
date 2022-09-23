@@ -1,11 +1,10 @@
-from models.competitions import Competitions_model
+from ..models.competitions import Competitions_model
 import json
 
 
 class Competitions(Competitions_model):
 
-    def loadCompetitions(self):
-
+    def load_competition(self):
         json_file = "competitions"
         competitions_list = []
         with open("{}".format(json_file) + ".json") as c:
@@ -18,5 +17,11 @@ class Competitions(Competitions_model):
                 ).__dict__)
         return competitions_list
 
-        # -----------------------------------------------------------------------------------------------------------------#
+    # -----------------------------------------------------------------------------------------------------------------#
 
+    def load_competition_by_name(self, competition_name):
+        competitions = self.load_competition()
+        foundCompetition = [c for c in competitions if c['name'] == competition_name][0]
+        return foundCompetition
+
+    # -----------------------------------------------------------------------------------------------------------------#

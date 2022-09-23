@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
-from repository.loadcompetitions import Competitions
-from repository.loadclub import Club
+from .repository.loadcompetitions import Competitions
+from .repository.loadclub import Club
 
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'something_special'
 
-    competitions = Competitions().loadCompetitions()
-    clubs = Club().loadClubs()
+    competitions = Competitions().load_competition()
+    clubs = Club().load_clubs()
 
     @app.route('/')
     def index():
@@ -16,13 +16,13 @@ def create_app():
 
     @app.route('/showSummary', methods=['POST'])
     def showSummary():
-        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        club = Club().load_clubs_by_email(club_email=request.form['email'])
         return render_template('welcome.html', club=club, competitions=competitions)
 
     @app.route('/book/<competition>/<club>')
     def book(competition, club):
-        foundClub = [c for c in clubs if c['name'] == club][0]
-        foundCompetition = [c for c in competitions if c['name'] == competition][0]
+        foundClub = Club().load_clubs_by_name(club_name=club)
+        foundCompetition = Competitions().load_competition_by_name(competition_name=competition)
         if foundClub and foundCompetition:
             return render_template('booking.html', club=foundClub, competition=foundCompetition)
         else:
@@ -31,8 +31,8 @@ def create_app():
 
     @app.route('/purchasePlaces', methods=['POST'])
     def purchasePlaces():
-        competition = [c for c in competitions if c['name'] == request.form['competition']][0]
-        club = [c for c in clubs if c['name'] == request.form['club']][0]
+        competition = Competitions().load_competition_by_name(competition_name=request.form['competition'])
+        club = Club().load_clubs_by_name(club_name=request.form['club'])
         placesRequired = int(request.form['places'])
         competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
         flash('Great-booking complete!')
