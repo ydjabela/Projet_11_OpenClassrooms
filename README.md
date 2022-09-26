@@ -57,7 +57,7 @@ flask run
 
 MacOS/Linux :
 ```
-export FLASK_APP=hello.py
+export FLASK_APP=server.py
 flask run
 ```
 ### Configuration actuelle
