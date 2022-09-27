@@ -95,6 +95,20 @@ def test_book(client):
     assert response.status_code == 500
 
 
+def test_purchase_places(client):
+    response = client.post(
+        "/purchasePlaces",
+        data={
+            "competition": competitions[0]['name'],
+            "club": clubs[1]['name'],
+            "places": 50
+        }
+    )
+    data = response.data.decode()
+    assert response.status_code == 200
+    assert "Welcome, {}".format(clubs[1]["email"]) in data
+
+
 def test_logout(client):
     response = client.get("/logout", follow_redirects=True)
     data = response.data.decode()
