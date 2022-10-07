@@ -8,7 +8,6 @@ def create_app():
     app.secret_key = 'something_special'
 
     competitions = Competitions().load_competition()
-    clubs = Club().load_clubs()
 
     @app.route('/')
     def index():
@@ -17,7 +16,10 @@ def create_app():
     @app.route('/showSummary', methods=['POST'])
     def showSummary():
         club = Club().load_clubs_by_email(club_email=request.form['email'])
-        return render_template('welcome.html', club=club, competitions=competitions)
+        if club is not None:
+            return render_template('welcome.html', club=club, competitions=competitions)
+        else:
+            return render_template("index.html"), 404
 
     @app.route('/book/<competition>/<club>')
     def book(competition, club):

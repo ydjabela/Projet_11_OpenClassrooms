@@ -59,11 +59,11 @@ def test_show_summary(client):
 
     # if email is not ok
     response = client.post("/showSummary", data={"email": clubs[0]["email"]})
-    assert response.status_code == 500
+    assert response.status_code == 404
 
     # if email is not exist
     response = client.post("/showSummary", data={"email": clubs[2]["email"]})
-    assert response.status_code == 500
+    assert response.status_code == 404
 
 
 def test_book(client):
