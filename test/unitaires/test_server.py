@@ -80,19 +80,19 @@ def test_book(client):
     competition_name = competitions[1]['name']
     clubs_name = clubs[0]['name']
     response = client.get("/book/{}/{}".format(competition_name, clubs_name))
-    assert response.status_code == 500
+    assert response.status_code == 404
 
     # if club not founded
     competition_name = competitions[0]['name']
     clubs_name = clubs[0]['name']
     response = client.get("/book/{}/{}".format(competition_name, clubs_name))
-    assert response.status_code == 500
+    assert response.status_code == 404
 
     # if competition  not founded
     competition_name = competitions[1]['name']
     clubs_name = clubs[1]['name']
     response = client.get("/book/{}/{}".format(competition_name, clubs_name))
-    assert response.status_code == 500
+    assert response.status_code == 404
 
 
 def test_purchase_places(client):
