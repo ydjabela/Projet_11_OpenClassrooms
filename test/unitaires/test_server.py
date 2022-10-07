@@ -1,5 +1,5 @@
 import pytest
-
+from ... import server
 from ... server import create_app
 clubs = [
     {
@@ -101,12 +101,16 @@ def test_purchase_places(client):
         data={
             "competition": competitions[0]['name'],
             "club": clubs[1]['name'],
-            "places": 50
+            "places": 13
         }
     )
+    current_points = int(clubs[1]['points'])
+    current_places = int(competitions[0]['numberOfPlaces'])
     data = response.data.decode()
     assert response.status_code == 200
     assert "Welcome, {}".format(clubs[1]["email"]) in data
+    assert str.encode(f"Points available: {current_points}") in response.data
+    assert str.encode(f"Number of Places: {current_places}") in response.data
 
 
 def test_logout(client):
