@@ -16,10 +16,7 @@ def create_app():
     @app.route('/showSummary', methods=['POST'])
     def showSummary():
         club = Club().load_clubs_by_email(club_email=request.form['email'])
-        if club is not None:
-            return render_template('welcome.html', club=club, competitions=competitions)
-        else:
-            return render_template("index.html"), 404
+        return render_template('welcome.html', club=club, competitions=competitions)
 
     @app.route('/book/<competition>/<club>')
     def book(competition, club):

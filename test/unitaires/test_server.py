@@ -2,41 +2,6 @@ import pytest
 from Projet_11_OpenClassrooms.server import create_app
 from Projet_11_OpenClassrooms.models.club import Club_model
 from Projet_11_OpenClassrooms.models.competitions import Competitions_model
-clubs = [
-    {
-        "name": "Cinho-Club",
-        "email": "cinhoclub@gmail.com",
-        "points": "15"
-    },
-    {
-        "name": "She Lifts",
-         "email": "kate@shelifts.co.uk",
-         "points": "12"
-    },
-    {
-        "name": "",
-        "email": '',
-        "points": ""
-    }
-]
-competitions = [
-    {
-        "name": "Spring Festival",
-        "date": "2020-03-27 10:00:00",
-        "numberOfPlaces": "25"
-    },
-    {
-        "name": "MLB World Series",
-        "date": "2022-09-26 00:19:00",
-        "numberOfPlaces": "20"
-    },
-    {
-        "name": "Devon Fall Classic",
-        "date": "2022-10-26 00:19:00",
-        "numberOfPlaces": "22"
-    }
-]
-
 
 @pytest.fixture
 def client(mocker):
