@@ -127,7 +127,7 @@ def test_book(client, mocker):
     assert response.status_code == 404
 
 
-def test_purchase_places(client, mocker):
+def test_purchase_places_ok(client, mocker):
     club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
     competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "25")
@@ -146,8 +146,43 @@ def test_purchase_places(client, mocker):
     assert "Welcome, {}".format(club_1.email) in data_1
     assert data_1.find("<title>Summary | GUDLFT Registration</title>") != -1
     assert data_1.find('Great-booking complete!') != -1
-    assert club_1.points == '15'
-    assert competition_1.numberOfPlaces == 21
+    assert club_1.points == '15'  # TODO correct  bug number  of club places
+    assert competition_1.numberOfPlaces == 21  # TODO correct  bug int -> str
+
+
+def test_purchase_places_nok(client, mocker):
+    for places in [-2, 0, 4, 6, 13]:
+        club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
+        mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
+        competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "25")
+        mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+                     return_value=competition_1)
+        response = client.post(
+            '/purchasePlaces',
+            data={
+                'competition': competition_1.name,
+                'club': club_1.name,
+                'places': places
+            }
+        )
+        data_1 = response.data.decode()
+        assert response.status_code == 200
+        assert "Welcome, {}".format(club_1.email) in data_1
+        assert data_1.find("<title>Summary | GUDLFT Registration</title>") != -1
+        if places <= 0:
+            # assert data_1.find('the  number  of  places need to be not negative') != -1  # TODO
+            pass
+        elif places > 12:
+            pass
+            # assert data_1.find('the  number  of  places need to be under to 12') != -1   # TODO
+        else:
+            # if number of  places > int(club_1.points)/3 = 5
+            if places >= 5:
+                assert club_1.points == '15'  # TODO correct  bug number  of club places ==> 15 - places *3
+                assert competition_1.numberOfPlaces == 25 - places  # TODO correct  bug int -> str
+            else:
+                pass
+                # assert data_1.find('Not enough points ') != -1
 
 
 def test_logout(client):
