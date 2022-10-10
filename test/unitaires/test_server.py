@@ -130,21 +130,24 @@ def test_book(client, mocker):
 def test_purchase_places(client, mocker):
     club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "30")
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition', return_value=competition_1)
+    competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "25")
+    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+                 return_value=competition_1)
     response = client.post(
-        "/purchasePlaces",
+        '/purchasePlaces',
         data={
-            'competition': 'competitions_name',
-            'club': 'club_name',
-            "places": 4
+            'competition': competition_1.name,
+            'club': club_1.name,
+            'places': 4
         }
     )
-    data = response.data.decode()
+    data_1 = response.data.decode()
     assert response.status_code == 200
-    assert "Welcome, {}".format(club_1.email) in data
-    assert str.encode(f"Points available: {club_1.points}") in response.data
-    assert str.encode(f"Number of Places: {competition_1.numberOfPlaces}") in response.data
+    assert "Welcome, {}".format(club_1.email) in data_1
+    assert data_1.find("<title>Summary | GUDLFT Registration</title>") != -1
+    assert data_1.find('Great-booking complete!') != -1
+    assert club_1.points == '15'
+    assert competition_1.numberOfPlaces == 21
 
 
 def test_logout(client):
