@@ -29,14 +29,14 @@ def create_app():
             return render_template('booking.html', club=foundClub, competition=foundCompetition)
         else:
             flash("Something went wrong-please try again")
-            return render_template('welcome.html', club=club, competitions=competitions)
+            return render_template('welcome.html', club=club, competitions=competitions), 404
 
     @app.route('/purchasePlaces', methods=['POST'])
     def purchasePlaces():
         competition = Competitions().load_competition_by_name(competition_name=request.form['competition'])
         club = Club().load_clubs_by_name(club_name=request.form['club'])
         placesRequired = int(request.form['places'])
-        competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+        competition.numberOfPlaces = int(competition.numberOfPlaces)-placesRequired
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
 
