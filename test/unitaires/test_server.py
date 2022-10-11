@@ -9,7 +9,7 @@ def client(mocker):
              Club_model("Raf-Club", "rafclub@gmail.com", "10"),
              Club_model("Francoise-Club", "Francoiseclub@gmail.com", "5")
              ]
-    competitions =[
+    competitions = [
         Competitions_model("first competitions", "2022-09-26 00:19:00", "15"),
         Competitions_model("second competitions", "2022-09-28 00:19:00", "20"),
         Competitions_model("third competitions", "2022-09-30 00:19:00", "5")
@@ -31,14 +31,14 @@ def test_should_status_code_ok(client):
     response = client.get('/')
     data = response.data.decode()
     assert response.status_code == 200
-    assert "Welcome to the GUDLFT Registration Portal" in data
+    assert "Welcome to the GUDLFT Registration Portal!" in data
 
 
 def test_show_summary(client, mocker):
-    club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
+    club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_email', return_value=club_1)
     # if email is ok
-    response_1 = client.post("/showSummary", data={"email": club_1.email})
+    response_1 = client.post("/showSummary", data={"email": club_1['email']})
     data_1 = response_1.data.decode()
     assert response_1.status_code == 200
     assert data_1.find("<title>GUDLFT Registration</title>") == -1
@@ -61,12 +61,12 @@ def test_show_summary(client, mocker):
 
 def test_book(client, mocker):
     # if competition and club  founded
-    club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
+    club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "15")
+    competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
     mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_1)
-    competition_nbr_of_places = competition_1.numberOfPlaces
-    response = client.get("/book/{}/{}".format(competition_1.name, club_1.name))
+    competition_nbr_of_places = competition_1['numberOfPlaces']
+    response = client.get("/book/{}/{}".format(competition_1['name'], club_1['name']))
     data = response.data.decode()
     assert response.status_code == 200
     assert "Places available: {}".format(competition_nbr_of_places) in data
@@ -82,72 +82,48 @@ def test_book(client, mocker):
     # if club not founded
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_2)
     mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_1)
-    response = client.get("/book/{}/Club not exist".format(competition_1.name))
+    response = client.get("/book/{}/Club not exist".format(competition_1['name']))
     assert response.status_code == 404
 
     # if competition  not founded
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
     mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_2)
-    response = client.get("/book/{}/Cinho-Club".format(club_1.name))
+    response = client.get("/book/{}/Cinho-Club".format(club_1['name']))
     assert response.status_code == 404
 
 
-def test_purchase_places_ok(client, mocker):
-    club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "25")
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
-                 return_value=competition_1)
-    response = client.post(
-        '/purchasePlaces',
-        data={
-            'competition': competition_1.name,
-            'club': club_1.name,
-            'places': 4
-        }
-    )
-    data_1 = response.data.decode()
-    assert response.status_code == 200
-    assert "Welcome, {}".format(club_1.email) in data_1
-    assert data_1.find("<title>Summary | GUDLFT Registration</title>") != -1
-    assert data_1.find('Great-booking complete!') != -1
-    assert club_1.points == '15'  # TODO correct  bug number  of club places
-    assert competition_1.numberOfPlaces == 21  # TODO correct  bug int -> str
-
-
 def test_purchase_places_nok(client, mocker):
-    for places in [-2, 0, 4, 6, 13]:
-        club_1 = Club_model("Cinho-Club", "cinhoclub@gmail.com", "15")
+    for places in [-2, 0, 4, 6, 13, 26]:
+        club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
         mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-        competition_1 = Competitions_model("first competitions", "2022-09-26 00:19:00", "25")
+        competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
         mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
                      return_value=competition_1)
         response = client.post(
             '/purchasePlaces',
             data={
-                'competition': competition_1.name,
-                'club': club_1.name,
+                'competition': competition_1['name'],
+                'club': club_1['name'],
                 'places': places
             }
         )
         data_1 = response.data.decode()
         assert response.status_code == 200
-        assert "Welcome, {}".format(club_1.email) in data_1
+        assert "Welcome, {}".format(club_1['email']) in data_1
         assert data_1.find("<title>Summary | GUDLFT Registration</title>") != -1
         if places <= 0:
-            # assert data_1.find('the  number  of  places need to be not negative') != -1  # TODO
-            pass
+            assert data_1.find('the  number  of  places need to be not negative') != -1
         elif places > 12:
-            pass
-            # assert data_1.find('the  number  of  places need to be under to 12') != -1   # TODO
+            assert data_1.find('the  number  of  places need to be under to 12') != -1
+        elif places > 25:
+            assert data_1.find('Not enough places') != -1
         else:
-            # if number of  places > int(club_1.points)/3 = 5
-            if places >= 5:
-                assert club_1.points == '15'  # TODO correct  bug number  of club places ==> 15 - places *3
-                assert competition_1.numberOfPlaces == 25 - places  # TODO correct  bug int -> str
+            # if number of  places > int(club_1['points'])/3 = 5
+            if places <= 5:
+                assert club_1['points'] == str(15 - 3*places)
+                assert competition_1["numberOfPlaces"] == str(25 - places)
             else:
-                pass
-                # assert data_1.find('Not enough points ') != -1
+                assert data_1.find('Not enough points') != -1
 
 
 def test_logout(client):
