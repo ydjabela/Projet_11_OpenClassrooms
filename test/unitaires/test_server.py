@@ -64,7 +64,10 @@ def test_book(client, mocker):
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
     competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_1)
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+        return_value=competition_1
+    )
     competition_nbr_of_places = competition_1['numberOfPlaces']
     response = client.get("/book/{}/{}".format(competition_1['name'], club_1['name']))
     data = response.data.decode()
@@ -75,19 +78,31 @@ def test_book(client, mocker):
     club_2 = None
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_2)
     competition_2 = None
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_2)
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+        return_value=competition_2
+    )
     response = client.get("/book/competitionsnotok/Club not exist")
     assert response.status_code == 404
 
     # if club not founded
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_2)
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_1)
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name',
+        return_value=club_2
+    )
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+        return_value=competition_1
+    )
     response = client.get("/book/{}/Club not exist".format(competition_1['name']))
     assert response.status_code == 404
 
     # if competition  not founded
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name', return_value=competition_2)
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+        return_value=competition_2
+    )
     response = client.get("/book/{}/Cinho-Club".format(club_1['name']))
     assert response.status_code == 404
 
