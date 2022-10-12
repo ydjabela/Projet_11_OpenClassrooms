@@ -23,8 +23,11 @@ class Club(Club_model):
 
     def load_clubs_by_name(self, club_name):
         clubs = self.load_clubs()
-        foundClub = [c for c in clubs if c['name'] == club_name][0]
-        return foundClub
+        try:
+            foundClub = [c for c in clubs if c['name'] == club_name][0]
+            return foundClub
+        except:
+            return None
 
     # -----------------------------------------------------------------------------------------------------------------#
 
@@ -33,7 +36,7 @@ class Club(Club_model):
         try:
             foundClub = [c for c in clubs if c['email'] == club_email][0]
             return foundClub
-        except IndexError:
+        except:
             return None
 
     # -----------------------------------------------------------------------------------------------------------------#
