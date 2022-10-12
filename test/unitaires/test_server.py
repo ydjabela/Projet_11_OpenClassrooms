@@ -197,6 +197,16 @@ def test_load_clubs_by_email(mocker):
     assert Club().load_clubs_by_email(club_email="clubnamenotok") is None
 
 
+def test_clubs_display(client, mocker):
+    club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
+    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs', return_value=club_1)
+    response_1 = client.get("/clubs")
+    data_1 = response_1.data.decode()
+    assert response_1.status_code == 200
+    assert data_1.find("<title>GUDLFT Registration</title>") == -1
+    assert "Liste des clubs:" in data_1
+
+
 def test_logout(client):
     response = client.get("/logout", follow_redirects=True)
     data = response.data.decode()
