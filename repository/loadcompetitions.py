@@ -21,7 +21,10 @@ class Competitions(Competitions_model):
 
     def load_competition_by_name(self, competition_name):
         competitions = self.load_competition()
-        foundCompetition = [c for c in competitions if c['name'] == competition_name][0]
-        return foundCompetition
+        try:
+            foundCompetition = [c for c in competitions if c['name'] == competition_name][0]
+            return foundCompetition
+        except:
+            return None
 
     # -----------------------------------------------------------------------------------------------------------------#

@@ -2,6 +2,7 @@ import pytest
 from Projet_11_OpenClassrooms.server import create_app
 from Projet_11_OpenClassrooms.models.club import Club_model
 from Projet_11_OpenClassrooms.models.competitions import Competitions_model
+from Projet_11_OpenClassrooms.repository.loadcompetitions import Competitions
 
 @pytest.fixture
 def client(mocker):
@@ -139,6 +140,24 @@ def test_purchase_places_nok(client, mocker):
                 assert competition_1["numberOfPlaces"] == str(25 - places)
             else:
                 assert data_1.find('Not enough points') != -1
+
+
+def test_load_competition_by_name(mocker):
+    competition_1 = [
+        {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"},
+        {"name": "second competitions", "email": "2022-09-28 00:19:00", "points": "20"},
+                     ]
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition',
+        return_value=competition_1
+    )
+    assert Competitions().load_competition_by_name(competition_name=competition_1[0]['name'])
+    competition_2 = None
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition',
+        return_value=competition_2
+    )
+    assert Competitions().load_competition_by_name(competition_name="competionnotok") is None
 
 
 def test_logout(client):
