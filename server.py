@@ -52,7 +52,10 @@ def create_app():
                 flash('Not enough points')
         return render_template('welcome.html', club=club, competitions=competitions)
 
-    # TODO: Add route for points display
+    @app.route('/clubs')
+    def clubs_display():
+        clubs = Club().load_clubs()
+        return render_template("display_clubs.html", clubs=clubs)
 
     @app.route('/logout')
     def logout():
