@@ -55,7 +55,7 @@ def create_app():
     @app.route('/clubs')
     def clubs_display():
         clubs = Club().load_clubs()
-        if clubs is not None
+        if clubs is not None:
             return render_template("display_clubs.html", clubs=clubs)
 
     @app.route('/logout')
