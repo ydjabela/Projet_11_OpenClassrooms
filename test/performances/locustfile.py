@@ -1,14 +1,31 @@
-from locust import HttpUser, task, between
+from locust import HttpUser, task
 
-class TestPerformance(HttpUser):
+
+class PerfTest(HttpUser):
+    """
+    Performance tests on main urls
+    """
+
     @task
-    def home(self):
+    def perf_index(self):
         self.client.get("/")
 
+    @task
+    def perf_logout(self):
+        self.client.get("/logout")
 
+    @task
+    def perf_points(self):
+        self.client.get("/points")
 
-class WebsiteUser(HttpUser):
-    task_set = TestPerformance
-    min_wait = 5000
-    max_wait = 9000
-    host="http://127.0.0.1:5000"
+    @task
+    def perf_login(self):
+        self.client.post("/show_summary", data={"email": "john@simplylift.co"})
+
+    @task
+    def perf_book(self):
+        self.client.get("/book/Competition Locust/Club Locust")
+
+    @task
+    def perf_purchase(self):
+        self.client.post("/purchase_places", data={"competition": "Competition Locust", "club": "Club Locust", "places": 0})
