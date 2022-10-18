@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 from .repository.loadcompetitions import Competitions
 from .repository.loadclub import Club
+import datetime
 
 
 def create_app():
@@ -25,7 +26,7 @@ def create_app():
     def book(competition, club):
         foundClub = Club().load_clubs_by_name(club_name=club)
         foundCompetition = Competitions().load_competition_by_name(competition_name=competition)
-        if foundClub and foundCompetition:
+        if foundClub and foundCompetition and foundCompetition['date'] >= str(datetime.datetime.now()):
             return render_template('booking.html', club=foundClub, competition=foundCompetition)
         else:
             flash("Something went wrong-please try again")

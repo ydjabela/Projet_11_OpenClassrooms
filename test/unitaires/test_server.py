@@ -10,9 +10,9 @@ def client(mocker):
              Club_model("Francoise-Club", "Francoiseclub@gmail.com", "5")
              ]
     competitions = [
-        Competitions_model("first competitions", "2022-09-26 00:19:00", "15"),
-        Competitions_model("second competitions", "2022-09-28 00:19:00", "20"),
-        Competitions_model("third competitions", "2022-09-30 00:19:00", "5")
+        Competitions_model("first competitions", "2023-09-26 00:19:00", "15"),
+        Competitions_model("second competitions", "2023-09-28 00:19:00", "20"),
+        Competitions_model("third competitions", "2023-09-30 00:19:00", "5")
     ]
     mocker.patch(
         'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
@@ -63,7 +63,7 @@ def test_book(client, mocker):
     # if competition and club  founded
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
+    competition_1 = {"name": "first competitions", "date": "2023-09-26 00:19:00", "numberOfPlaces": "25"}
     mocker.patch(
         'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
         return_value=competition_1
@@ -106,12 +106,23 @@ def test_book(client, mocker):
     response = client.get("/book/{}/Cinho-Club".format(club_1['name']))
     assert response.status_code == 404
 
+    # if competition and club  founded but date  is  in the past
+    club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
+    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
+    competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+        return_value=competition_1
+    )
+    response = client.get("/book/{}/{}".format(competition_1['name'], club_1['name']))
+    assert response.status_code == 404
+
 
 def test_purchase_places_nok(client, mocker):
     for places in [-2, 0, 4, 6, 13, 26]:
         club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
         mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-        competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
+        competition_1 = {"name": "first competitions", "date": "2023-09-26 00:19:00", "numberOfPlaces": "25"}
         mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
                      return_value=competition_1)
         response = client.post(
