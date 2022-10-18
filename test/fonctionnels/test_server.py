@@ -47,8 +47,3 @@ class TestFunctional:
         href = "/logout"
         driver.find_element(by=By.XPATH, value=f"//a[@href='{href}']").click()
         assert driver.find_element(By.TAG_NAME, "h1").text == "Welcome to the GUDLFT Registration Portal!"
-
-
-
-
-

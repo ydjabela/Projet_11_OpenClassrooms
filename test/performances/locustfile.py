@@ -16,16 +16,16 @@ class PerfTest(HttpUser):
 
     @task
     def perf_points(self):
-        self.client.get("/points")
+        self.client.get("/clubs")
 
     @task
     def perf_login(self):
-        self.client.post("/show_summary", data={"email": "john@simplylift.co"})
+        self.client.post("/showSummary", data={"email": "john@simplylift.co"})
 
     @task
     def perf_book(self):
-        self.client.get("/book/Competition Locust/Club Locust")
+        self.client.get("/book/Spring%20Festival/Simply%20Lift")
 
     @task
     def perf_purchase(self):
-        self.client.post("/purchase_places", data={"competition": "Competition Locust", "club": "Club Locust", "places": 0})
+        self.client.post("/purchasePlaces", data={"competition": "Competition Locust", "club": "Club Locust", "places": 1})
