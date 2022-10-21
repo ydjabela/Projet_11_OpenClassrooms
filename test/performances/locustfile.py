@@ -28,4 +28,8 @@ class PerfTest(HttpUser):
 
     @task
     def perf_purchase(self):
-        self.client.post("/purchasePlaces", data={"competition": "Competition Locust", "club": "Club Locust", "places": 1})
+        self.client.post("/purchasePlaces", data={
+            "competition": "Competition Locust",
+            "club": "Club Locust",
+            "places": 1
+        })

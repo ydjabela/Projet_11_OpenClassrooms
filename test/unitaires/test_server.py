@@ -3,6 +3,7 @@ from Projet_11_OpenClassrooms.server import create_app
 from Projet_11_OpenClassrooms.models.club import Club_model
 from Projet_11_OpenClassrooms.models.competitions import Competitions_model
 
+
 @pytest.fixture
 def client(mocker):
     clubs = [Club_model("Cinho-Club", "cinhoclub@gmail.com", "15"),
