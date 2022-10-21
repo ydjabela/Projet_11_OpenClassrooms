@@ -2,8 +2,7 @@ import pytest
 from Projet_11_OpenClassrooms.server import create_app
 from Projet_11_OpenClassrooms.models.club import Club_model
 from Projet_11_OpenClassrooms.models.competitions import Competitions_model
-from Projet_11_OpenClassrooms.repository.loadcompetitions import Competitions
-from Projet_11_OpenClassrooms.repository.loadclub import Club
+
 
 @pytest.fixture
 def client(mocker):
@@ -12,9 +11,9 @@ def client(mocker):
              Club_model("Francoise-Club", "Francoiseclub@gmail.com", "5")
              ]
     competitions = [
-        Competitions_model("first competitions", "2022-09-26 00:19:00", "15"),
-        Competitions_model("second competitions", "2022-09-28 00:19:00", "20"),
-        Competitions_model("third competitions", "2022-09-30 00:19:00", "5")
+        Competitions_model("first competitions", "2023-09-26 00:19:00", "15"),
+        Competitions_model("second competitions", "2023-09-28 00:19:00", "20"),
+        Competitions_model("third competitions", "2023-09-30 00:19:00", "5")
     ]
     mocker.patch(
         'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
@@ -65,7 +64,7 @@ def test_book(client, mocker):
     # if competition and club  founded
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
     mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
+    competition_1 = {"name": "first competitions", "date": "2023-09-26 00:19:00", "numberOfPlaces": "25"}
     mocker.patch(
         'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
         return_value=competition_1
@@ -108,12 +107,23 @@ def test_book(client, mocker):
     response = client.get("/book/{}/Cinho-Club".format(club_1['name']))
     assert response.status_code == 404
 
+    # if competition and club  founded but date  is  in the past
+    club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
+    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
+    competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
+    mocker.patch(
+        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+        return_value=competition_1
+    )
+    response = client.get("/book/{}/{}".format(competition_1['name'], club_1['name']))
+    assert response.status_code == 404
+
 
 def test_purchase_places_nok(client, mocker):
     for places in [-2, 0, 4, 6, 13, 26]:
         club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
         mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-        competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
+        competition_1 = {"name": "first competitions", "date": "2023-09-26 00:19:00", "numberOfPlaces": "25"}
         mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
                      return_value=competition_1)
         response = client.post(
@@ -143,58 +153,14 @@ def test_purchase_places_nok(client, mocker):
                 assert data_1.find('Not enough points') != -1
 
 
-def test_load_competition_by_name(mocker):
-    competition_1 = [
-        {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"},
-        {"name": "second competitions", "email": "2022-09-28 00:19:00", "points": "20"},
-                     ]
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition',
-        return_value=competition_1
-    )
-    assert Competitions().load_competition_by_name(competition_name=competition_1[0]['name'])
-    competition_2 = None
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition',
-        return_value=competition_2
-    )
-    assert Competitions().load_competition_by_name(competition_name="competionnotok") is None
-
-
-def test_load_clubs_by_name(mocker):
-    clubs_1 = [
-        {"name": "first competitions", "email": "2022-09-26 00:19:00", "points": "25"},
-        {"name": "Raf-Club", "email": "rafclub@gmail.com", "points": "10"},
-     ]
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
-        return_value=clubs_1
-    )
-    assert Club().load_clubs_by_name(club_name=clubs_1[0]['name'])
-    clubs_2 = None
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
-        return_value=clubs_2
-    )
-    assert Club().load_clubs_by_name(club_name="clubnamenotok") is None
-
-
-def test_load_clubs_by_email(mocker):
-    clubs_1 = [
-        {"name": "first competitions", "email": "2022-09-26 00:19:00", "points": "25"},
-        {"name": "Raf-Club", "email": "rafclub@gmail.com", "points": "10"},
-     ]
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
-        return_value=clubs_1
-    )
-    assert Club().load_clubs_by_email(club_email=clubs_1[0]['email'])
-    clubs_2 = None
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
-        return_value=clubs_2
-    )
-    assert Club().load_clubs_by_email(club_email="clubnamenotok") is None
+def test_clubs_display(client, mocker):
+    club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
+    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs', return_value=club_1)
+    response_1 = client.get("/clubs")
+    data_1 = response_1.data.decode()
+    assert response_1.status_code == 200
+    assert data_1.find("<title>GUDLFT Registration</title>") == -1
+    assert "Liste des clubs:" in data_1
 
 
 def test_logout(client):
