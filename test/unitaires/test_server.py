@@ -1,7 +1,7 @@
 import pytest
-from Projet_11_OpenClassrooms.server import create_app
-from Projet_11_OpenClassrooms.models.club import Club_model
-from Projet_11_OpenClassrooms.models.competitions import Competitions_model
+from ...server import create_app
+from ...models.club import Club_model
+from ...models.competitions import Competitions_model
 
 
 @pytest.fixture
