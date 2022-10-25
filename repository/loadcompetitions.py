@@ -24,7 +24,7 @@ class Competitions(Competitions_model):
         try:
             foundCompetition = [c for c in competitions if c['name'] == competition_name][0]
             return foundCompetition
-        except TypeError:
+        except TypeError or IndexError:
             return None
 
     # -----------------------------------------------------------------------------------------------------------------#
