@@ -76,15 +76,21 @@ Nous aimons aussi montrer à quel point nous testons bien, il y a donc un module
 
 Vous trouverez dans le dossier tests : des tests unitaires, fonctionnels et de performance, utilisant Pytest, Selenium et Locust.
 
-Pour exécuter tous les tests, depuis le dossier "Python_Testing".
 ATTENTION : une fois exécutés, les tests Selenium nécessiteront un redémarrage du serveur local pour réussir (à améliorer).
+* Tests unitaires:
 ```
+cd test/unitaires
 pytest
 ```
+* Tests fonctionnels:
+```
+cd test/fonctionnels
+python test_server.py
+```
+* Tests de performances:
 Pour exécuter des tests de performances :
 ```
 cd test/performances
-
 locust
 ```
 Interface web Locust disponible sur http://localhost:8089
