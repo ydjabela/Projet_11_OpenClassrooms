@@ -2,6 +2,8 @@ import pytest
 from ...server import create_app
 from ...models.club import Club_model
 from ...models.competitions import Competitions_model
+from ...repository.loadcompetitions import Competitions
+from ...repository.loadclub import Club
 
 
 @pytest.fixture
@@ -15,12 +17,14 @@ def client(mocker):
         Competitions_model("second competitions", "2023-09-28 00:19:00", "20"),
         Competitions_model("third competitions", "2023-09-30 00:19:00", "5")
     ]
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs',
+    mocker.patch.object(
+        Club,
+        "load_clubs",
         return_value=clubs
     )
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition',
+    mocker.patch.object(
+        Competitions,
+        "load_competition",
         return_value=competitions
     )
     app = create_app()
@@ -37,7 +41,7 @@ def test_should_status_code_ok(client):
 
 def test_show_summary(client, mocker):
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_email', return_value=club_1)
+    mocker.patch.object(Club, "load_clubs_by_email", return_value=club_1)
     # if email is ok
     response_1 = client.post("/showSummary", data={"email": club_1['email']})
     data_1 = response_1.data.decode()
@@ -47,7 +51,7 @@ def test_show_summary(client, mocker):
 
     # if email is not ok
     club_2 = None
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_email', return_value=club_2)
+    mocker.patch.object(Club, "load_clubs_by_email", return_value=club_2)
     response_2 = client.post("/showSummary", data={"email": "email_not_ok@test@com"})
     data_2 = response_2.data.decode()
     assert response_2.status_code == 404
@@ -55,7 +59,7 @@ def test_show_summary(client, mocker):
 
     # if email is not exist
     club_3 = None
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_email', return_value=club_3)
+    mocker.patch.object(Club, "load_clubs_by_email", return_value=club_3)
     response_3 = client.post("/showSummary", data={"email": ""})
     assert response_3.status_code == 404
 
@@ -63,10 +67,11 @@ def test_show_summary(client, mocker):
 def test_book(client, mocker):
     # if competition and club  founded
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
+    mocker.patch.object(Club, "load_clubs_by_name", return_value=club_1)
     competition_1 = {"name": "first competitions", "date": "2023-09-26 00:19:00", "numberOfPlaces": "25"}
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+    mocker.patch.object(
+        Competitions,
+        "load_competition_by_name",
         return_value=competition_1
     )
     competition_nbr_of_places = competition_1['numberOfPlaces']
@@ -77,31 +82,27 @@ def test_book(client, mocker):
 
     # if competition and club not founded
     club_2 = None
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_2)
+    mocker.patch.object(Club, "load_clubs_by_name", return_value=club_2)
     competition_2 = None
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+    mocker.patch.object(
+        Competitions,
+        "load_competition_by_name",
         return_value=competition_2
     )
     response = client.get("/book/competitionsnotok/Club not exist")
     assert response.status_code == 404
 
     # if club not founded
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name',
-        return_value=club_2
-    )
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
-        return_value=competition_1
-    )
+    mocker.patch.object(Club, "load_clubs_by_name", return_value=club_2)
+    mocker.patch.object(Competitions, "load_competition_by_name", return_value=competition_1)
     response = client.get("/book/{}/Club not exist".format(competition_1['name']))
     assert response.status_code == 404
 
     # if competition  not founded
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+    mocker.patch.object(Club, "load_clubs_by_name", return_value=club_1)
+    mocker.patch.object(
+        Competitions,
+        "load_competition_by_name",
         return_value=competition_2
     )
     response = client.get("/book/{}/Cinho-Club".format(club_1['name']))
@@ -109,10 +110,11 @@ def test_book(client, mocker):
 
     # if competition and club  founded but date  is  in the past
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
+    mocker.patch.object(Club, "load_clubs_by_name", return_value=club_1)
     competition_1 = {"name": "first competitions", "date": "2022-09-26 00:19:00", "numberOfPlaces": "25"}
-    mocker.patch(
-        'Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
+    mocker.patch.object(
+        Competitions,
+        "load_competition_by_name",
         return_value=competition_1
     )
     response = client.get("/book/{}/{}".format(competition_1['name'], club_1['name']))
@@ -122,10 +124,12 @@ def test_book(client, mocker):
 def test_purchase_places_nok(client, mocker):
     for places in [-2, 0, 4, 6, 13, 26]:
         club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
-        mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs_by_name', return_value=club_1)
+        mocker.patch.object(Club, "load_clubs_by_name", return_value=club_1)
         competition_1 = {"name": "first competitions", "date": "2023-09-26 00:19:00", "numberOfPlaces": "25"}
-        mocker.patch('Projet_11_OpenClassrooms.repository.loadcompetitions.Competitions.load_competition_by_name',
-                     return_value=competition_1)
+        mocker.patch.object(
+            Competitions,
+            "load_competition_by_name",
+            return_value=competition_1)
         response = client.post(
             '/purchasePlaces',
             data={
@@ -155,7 +159,7 @@ def test_purchase_places_nok(client, mocker):
 
 def test_clubs_display(client, mocker):
     club_1 = {"name": "Cinho-Club", "email": "cinhoclub@gmail.com", "points": "15"}
-    mocker.patch('Projet_11_OpenClassrooms.repository.loadclub.Club.load_clubs', return_value=club_1)
+    mocker.patch.object(Club, "load_clubs", return_value=club_1)
     response_1 = client.get("/clubs")
     data_1 = response_1.data.decode()
     assert response_1.status_code == 200
