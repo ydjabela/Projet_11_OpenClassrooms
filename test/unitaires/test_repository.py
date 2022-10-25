@@ -1,5 +1,5 @@
-from Projet_11_OpenClassrooms.repository.loadcompetitions import Competitions
-from Projet_11_OpenClassrooms.repository.loadclub import Club
+from ...repository.loadcompetitions import Competitions
+from ...repository.loadclub import Club
 
 
 def test_load_competition_by_name(mocker):
