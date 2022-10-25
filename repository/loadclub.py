@@ -26,7 +26,7 @@ class Club(Club_model):
         try:
             foundClub = [c for c in clubs if c['name'] == club_name][0]
             return foundClub
-        except (TypeError, IndexError) as e:
+        except (TypeError, IndexError):
             return None
 
     # -----------------------------------------------------------------------------------------------------------------#
@@ -36,7 +36,7 @@ class Club(Club_model):
         try:
             foundClub = [c for c in clubs if c['email'] == club_email][0]
             return foundClub
-        except (TypeError, IndexError) as e:
+        except (TypeError, IndexError):
             return None
 
     # -----------------------------------------------------------------------------------------------------------------#

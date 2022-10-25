@@ -54,7 +54,5 @@ def test_load_clubs_by_email(mocker):
     )
     assert Club().load_clubs_by_email(club_email=clubs_1[0]['email'])
     clubs_2 = None
-    mocker.patch.object(Club, "load_clubs",
-        return_value=clubs_2
-    )
+    mocker.patch.object(Club, "load_clubs", return_value=clubs_2)
     assert Club().load_clubs_by_email(club_email="clubnamenotok") is None
