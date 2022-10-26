@@ -47,5 +47,3 @@ class TestFunctional:
         assert driver.find_element(By.TAG_NAME, "h1").text == "Welcome to the GUDLFT Registration Portal!"
         time.sleep(5)
         driver.quit()
-
-
