@@ -73,6 +73,27 @@ Vous êtes libre d'utiliser le framework de test que vous aimez, l'essentiel est
 
 Nous aimons aussi montrer à quel point nous testons bien, il y a donc un module appelé
 [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) que vous devez ajouter à votre projet.
+
+Vous trouverez dans le dossier tests : des tests unitaires, fonctionnels et de performance, utilisant Pytest, Selenium et Locust.
+
+ATTENTION : une fois exécutés, les tests Selenium nécessiteront un redémarrage du serveur local pour réussir (à améliorer).
+* Tests unitaires:
+```
+cd test/unitaires
+pytest
+```
+* Tests fonctionnels:
+```
+cd test/fonctionnels
+python test_server.py
+```
+* Tests de performances:
+Pour exécuter des tests de performances :
+```
+cd test/performances
+locust
+```
+Interface web Locust disponible sur http://localhost:8089
 #### Cette commande sera obligatoire à chaque fois que vous voudrez travailler avec le cours. Dans le même terminal, tapez maintenant
 ```
 pip install -r requirements.txt
