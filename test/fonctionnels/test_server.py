@@ -49,4 +49,3 @@ class TestFunctional:
         driver.quit()
 
 
-TestFunctional().test_server()
